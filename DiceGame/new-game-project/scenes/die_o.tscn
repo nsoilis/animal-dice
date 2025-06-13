@@ -1,0 +1,17 @@
+[gd_scene load_steps=5 format=3 uid="uid://515labal0jfn"]
+
+[ext_resource type="PackedScene" uid="uid://btpb5bclgui6t" path="res://scenes/die.tscn" id="1_5oa3c"]
+[ext_resource type="Texture2D" uid="uid://rjdwpbrdjhm3" path="res://images/frogFace.png" id="2_8yiuj"]
+[ext_resource type="Material" uid="uid://dxvx6kkgqmweg" path="res://Mats/Dice_Offensive.tres" id="2_410ri"]
+[ext_resource type="Texture2D" uid="uid://bk0t6ppahdj4" path="res://images/catFace.png" id="3_5bajh"]
+
+[node name="Offensive" instance=ExtResource("1_5oa3c")]
+face_textures = Array[Texture2D]([null, ExtResource("2_8yiuj"), ExtResource("2_8yiuj"), ExtResource("2_8yiuj"), ExtResource("3_5bajh"), ExtResource("3_5bajh"), ExtResource("3_5bajh")])
+
+[node name="MeshInstance3D" parent="." index="1"]
+surface_material_override/0 = ExtResource("2_410ri")
+surface_material_override/1 = ExtResource("2_410ri")
+surface_material_override/2 = ExtResource("2_410ri")
+surface_material_override/3 = ExtResource("2_410ri")
+surface_material_override/4 = ExtResource("2_410ri")
+surface_material_override/5 = ExtResource("2_410ri")

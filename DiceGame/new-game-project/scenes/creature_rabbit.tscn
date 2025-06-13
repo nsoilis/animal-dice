@@ -1,0 +1,9 @@
+[gd_scene load_steps=3 format=3 uid="uid://by0ceh3tg3lt7"]
+
+[ext_resource type="PackedScene" uid="uid://2utqcjfgmqcy" path="res://scenes/CreatureTemplate.tscn" id="1_kgnon"]
+[ext_resource type="Texture2D" uid="uid://ctluvaj1e582" path="res://images/rabbitFace.png" id="2_h1pak"]
+
+[node name="CreatureTemplate" instance=ExtResource("1_kgnon")]
+
+[node name="Sprite3D" parent="." index="0"]
+texture = ExtResource("2_h1pak")

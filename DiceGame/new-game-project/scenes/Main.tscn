@@ -1,0 +1,52 @@
+[gd_scene load_steps=8 format=3 uid="uid://ewqecmpsmp1s"]
+
+[ext_resource type="Script" path="res://main.gd" id="1_x1bre"]
+[ext_resource type="PackedScene" uid="uid://515labal0jfn" path="res://scenes/die_o.tscn" id="2_qjyl2"]
+[ext_resource type="PackedScene" uid="uid://cchydbji2gcrj" path="res://scenes/die_d.tscn" id="3_h5xj6"]
+[ext_resource type="PackedScene" uid="uid://qmf78hu86m58" path="res://scenes/die_s.tscn" id="4_jfk4m"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_mwrp6"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_quyqy"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_mrfeo"]
+albedo_color = Color(0.470588, 1, 0.870588, 1)
+
+[node name="GameRoot" type="Node3D"]
+script = ExtResource("1_x1bre")
+offense_die_scene = ExtResource("2_qjyl2")
+defense_die_scene = ExtResource("3_h5xj6")
+special_die_scene = ExtResource("4_jfk4m")
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 0, 4.92109, 7.56511)
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.644351, 0.76473, 0, -0.76473, 0.644351, 0, 24.9711, 13.8114)
+
+[node name="DiceContainer" type="Node3D" parent="."]
+
+[node name="CreatureContainer" type="Node3D" parent="."]
+
+[node name="Floor" type="StaticBody3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Floor"]
+transform = Transform3D(20, 0, 0, 0, 0.1, 0, 0, 0, 20, 0, 0, 0)
+shape = SubResource("BoxShape3D_mwrp6")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Floor"]
+transform = Transform3D(40, 0, 0, 0, 0.2, 0, 0, 0, 40, 0, 0, 0)
+mesh = SubResource("BoxMesh_quyqy")
+skeleton = NodePath("../CollisionShape3D")
+surface_material_override/0 = SubResource("StandardMaterial3D_mrfeo")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="Button" type="Button" parent="CanvasLayer"]
+offset_left = 10.0
+offset_top = 587.0
+offset_right = 95.0
+offset_bottom = 637.0
+text = "REROLL"
+
+[connection signal="pressed" from="CanvasLayer/Button" to="." method="_on_button_pressed"]
