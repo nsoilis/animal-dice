@@ -12,18 +12,12 @@ extends Node3D
 @export var defense_count: int = 2
 @export var special_count: int = 1
 
-@export var creature_scenes: Array[PackedScene] = [
-	null,  # slot 0 unused
-	preload("res://scenes/creature_turtle.tscn"),  
-	preload("res://scenes/creature_cat.tscn"),     
-	preload("res://scenes/creature_frog.tscn"),    
-	preload("res://scenes/creature_owl.tscn"),     
-	preload("res://scenes/creature_bear.tscn"),    
-	preload("res://scenes/creature_rabbit.tscn")   
-]
+@export var face_textures: Array[Texture2D] = [] 
+@export var creature_scenes: Array[PackedScene] = []         # ← NEW line
 
 var dice: Array[RigidBody3D] = []
 const TOTAL_DICE: int = 5
+var settled_count := 0
 
 func _ready() -> void:
 	spawn_and_roll_dice()
@@ -77,33 +71,23 @@ func rotation_for_face(face: int) -> Vector3:
 		_:
 			return Vector3.ZERO
 
-func _on_die_settled(face_name: String, die: RigidBody3D) -> void:
-	# 1) figure out which face‐index we landed on
-	var idx = int(face_name)
-	if idx <= 0 or idx >= creature_scenes.size():
-		return
-	
-	# 2) pick the correct PackedScene for this die
-	var scene = creature_scenes[idx]
-	if not scene:
-		return
-	
-	# 3) derive a friendly animal name from its file name
-	var file = scene.resource_path.get_file()                     # e.g. "creature_turtle.tscn"
-	var base = file.get_basename()                                # e.g. "creature_turtle"
-	var animal = base.replace("creature_", "").capitalize()       # -> "Turtle"
-	
-	# 4) print which die settled on which creature
-	print("%s settled on: %s" % [die.name, animal])
-	
-	# 5) spawn the actual creature instance
-	var c = scene.instantiate() as Node3D
-	c.position = Vector3(randf() * 4 - 2, 0, randf() * 4 - 2)
-	$CreatureContainer.add_child(c)
+func _on_die_settled(face_idx: int, die: RigidBody3D) -> void:
+	settled_count += 1
+	var scene = die.creature_scenes[face_idx]
+	var animal = scene.resource_path.get_file().get_basename().replace("creature_","").capitalize()
+	print("%s spawned: %s (face %d)" % [die.name, animal, face_idx])
+
+	if settled_count == TOTAL_DICE:
+		print("")  
+		print("***************************************")
+		print("")
+		settled_count = 0
+
 
 
 
 func _on_button_pressed() -> void:
+	
 	# clear old creatures
 	for c in $CreatureContainer.get_children():
 		c.queue_free()
