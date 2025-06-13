@@ -1,7 +1,0 @@
-[gd_scene format=3 uid="uid://2utqcjfgmqcy"]
-
-[node name="CreatureTemplate" type="Node3D"]
-
-[node name="Sprite3D" type="Sprite3D" parent="."]
-billboard = 2
-texture_filter = 0
