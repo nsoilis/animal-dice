@@ -8,9 +8,9 @@ extends Node3D
 @export var defense_creatures: Array[PackedScene]
 @export var special_creatures: Array[PackedScene]
 
-@export var offense_count: int = 2
+@export var offense_count: int = 3
 @export var defense_count: int = 2
-@export var special_count: int = 2
+@export var special_count: int = 1
 
 @export var face_textures: Array[Texture2D] = [] 
 @export var creature_scenes: Array[PackedScene] = []         # ← NEW line
@@ -20,6 +20,7 @@ var dice: Array[RigidBody3D] = []
 const TOTAL_DICE: int = 6
 var settled_count := 0
 var spawn_logs := []
+var _should_print := false
 
 func _ready() -> void:
 	spawn_and_roll_dice()
@@ -74,36 +75,31 @@ func rotation_for_face(face: int) -> Vector3:
 			return Vector3.ZERO
 
 func _on_die_settled(face_idx: int, die: RigidBody3D) -> void:
-	# build the message
+	# collect every settle
 	var scene = die.creature_scenes[face_idx]
 	var animal = scene.resource_path.get_file()\
 		.get_basename()\
 		.replace("creature_","")\
 		.capitalize()
-	var msg = "%s spawned: %s (face %d)" % [die.name, animal, face_idx]
-
-	# store it
-	spawn_logs.append(msg)
+	spawn_logs.append("%s spawned: %s (face %d)" % [die.name, animal, face_idx])
 	settled_count += 1
 
-	# once all dice are in…
-	if settled_count == TOTAL_DICE:
-		# sort alphabetically by the entire string
+	# only print when we’ve been asked to
+	if _should_print and settled_count == TOTAL_DICE:
 		spawn_logs.sort()
-		# print them in order
-		for m in spawn_logs:
-			print(m)
-		# banner
-		print("")
-		print("***************************************")
-		print("")
-		# reset for next roll
-		settled_count = 0
+		for line in spawn_logs:
+			print(line)
+		print("\n***************************************\n")
+		_should_print = false
 		spawn_logs.clear()
+		settled_count = 0
 
 func _on_button_pressed() -> void:
-	# clear state before you reroll
+	# prepare for a fresh print when this roll completes
+	_should_print = true
 	settled_count = 0
+	spawn_logs.clear()
+
 	# clear old creatures
 	for c in $CreatureContainer.get_children():
 		c.queue_free()
@@ -113,10 +109,8 @@ func _on_button_pressed() -> void:
 	for die in dice:
 		die.linear_velocity  = Vector3.ZERO
 		die.angular_velocity = Vector3.ZERO
-		# lift slightly
 		var t = die.global_transform
 		t.origin.y += 0.2
 		die.global_transform = t
-		# hop + roll
 		die.apply_central_impulse(Vector3.UP * HOP_STRENGTH)
 		die.roll()
