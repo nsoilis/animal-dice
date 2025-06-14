@@ -9,7 +9,7 @@ extends Node3D
 @export var special_creatures: Array[PackedScene]
 
 @export var offense_count: int = 2
-@export var defense_count: int = 1
+@export var defense_count: int = 2
 @export var special_count: int = 2
 
 @export var face_textures: Array[Texture2D] = [] 
@@ -17,7 +17,7 @@ extends Node3D
 
 var dice: Array[RigidBody3D] = []
 
-const TOTAL_DICE: int = 5
+const TOTAL_DICE: int = 6
 var settled_count := 0
 var spawn_logs := []
 
