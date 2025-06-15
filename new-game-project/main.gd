@@ -13,8 +13,8 @@ extends Node3D
 
 # === Dice Roll Counts ===
 @export var offense_count: int = 3
-@export var defense_count: int = 2
-@export var special_count: int = 1
+@export var defense_count: int = 3
+@export var special_count: int = 0
 
 # === Die Face Visuals ===
 @export var face_textures: Array[Texture2D] = []
@@ -135,13 +135,17 @@ func rotation_for_face(face: int) -> Vector3:
 func _layout_dice() -> void:
 	for i in range(dice.size()):
 		var die = dice[i]
-
-		# put it to sleep so physics won’t move it
+		# freeze physics so it stays put
 		die.sleeping = true
 
-		# snap into the editor-placed slot
-		var slot_pos = dice_slots[i].global_transform.origin
-		var t = die.global_transform
-		t.origin = slot_pos
-		die.global_transform = t
+		# compute the slot in local coords
+		var world_slot = dice_slots[i].global_transform.origin
+		var local_slot = $DiceContainer.to_local(world_slot)
+
+		# tween from current to target over 0.5s
+		var tw = create_tween()
+		tw.tween_property(die, "position", local_slot, 0.5)\
+		  .set_trans(Tween.TRANS_SINE)\
+		  .set_ease(Tween.EASE_IN_OUT)
+
 		

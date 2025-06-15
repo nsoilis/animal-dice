@@ -43,22 +43,22 @@ surface_material_override/0 = SubResource("StandardMaterial3D_mrfeo")
 [node name="DiceSlots" type="Node3D" parent="."]
 
 [node name="DiceSlot1" type="Node3D" parent="DiceSlots"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0.5, 0.967461)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0.54, 0.967461)
 
 [node name="DiceSlot2" type="Node3D" parent="DiceSlots"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0.967461)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.54, 0.967461)
 
 [node name="DiceSlot3" type="Node3D" parent="DiceSlots"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0.5, 0.967461)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0.54, 0.967461)
 
 [node name="DiceSlot4" type="Node3D" parent="DiceSlots"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 0.5, 2.96746)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 0.54, 2.96746)
 
 [node name="DiceSlot5" type="Node3D" parent="DiceSlots"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0.5, 2.96746)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0.54, 2.96746)
 
 [node name="DiceSlot6" type="Node3D" parent="DiceSlots"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0.5, 2.96746)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0.54, 2.96746)
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 

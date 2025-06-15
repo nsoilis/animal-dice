@@ -6,6 +6,12 @@ signal settled(face_idx: int, die: RigidBody3D)
 @export var face_textures: Array[Texture2D] = []
 @export var creature_scenes: Array[PackedScene] = []
 
+@export var min_bounce:    float = 12.0    # how high it jumps at minimum
+@export var max_bounce:    float = 18.0    # how high it jumps at maximum
+@export var max_impulse:   float = 5.0     # horizontal impulse range
+@export var min_forward:   float = 2.0     # guarantee at least this much Z
+@export var spin_strength: float = 8.0    # torque range on X/Z axes
+
 # === Internal State ===
 var has_settled := false
 
@@ -32,12 +38,19 @@ func _ready() -> void:
 
 func roll() -> void:
 	has_settled = false
-	sleeping = false
+	sleeping     = false
 
-	# Apply random impulse and torque to tumble the die
-	apply_impulse(Vector3.ZERO, Vector3(randf() * 10 - 5, randf() * 10 + 10, randf() * 10 - 5))
-	apply_torque_impulse(Vector3(randf() * 5, randf() * 5, randf() * 5))
+	var ix = randf() * (2 * max_impulse) - max_impulse
+	var iy = randf() * (max_bounce - min_bounce) + min_bounce
+	var iz = randf() * (2 * max_impulse) - max_impulse
+	if abs(iz) < min_forward:
+		iz = min_forward * (-1 if iz < 0 else 1)
 
+	apply_impulse(Vector3.ZERO, Vector3(ix, iy, iz))
+
+	var tx = randf() * (2 * spin_strength) - spin_strength
+	var tz = randf() * (2 * spin_strength) - spin_strength
+	apply_torque_impulse(Vector3(tx, 0, tz))
 
 func _on_sleeping_state_changed() -> void:
 	if sleeping and not has_settled:
