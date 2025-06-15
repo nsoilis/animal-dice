@@ -1,10 +1,13 @@
 extends RigidBody3D
+
 signal settled(face_idx: int, die: RigidBody3D)
 
+# === Exported Data ===
 @export var face_textures: Array[Texture2D] = []
 @export var creature_scenes: Array[PackedScene] = []
 
-var has_settled = false
+# === Internal State ===
+var has_settled := false
 
 @onready var _targets := [
 	$Target1,
@@ -15,28 +18,32 @@ var has_settled = false
 	$Target6,
 ]
 
+
 func _ready() -> void:
 	has_settled = false
 	connect("sleeping_state_changed", Callable(self, "_on_sleeping_state_changed"))
 
-	# Paint your Face1…Face6 Sprite3Ds as before…
+	# Assign textures to face sprites
 	for i in range(1, 7):
-		var sprite = get_node("Face%d" % i) as Sprite3D
-		if face_textures[i]:
+		var sprite := get_node("Face%d" % i) as Sprite3D
+		if face_textures.size() > i and face_textures[i]:
 			sprite.texture = face_textures[i]
-			
+
+
 func roll() -> void:
-	# Reset our settled flag and physics sleeping state
 	has_settled = false
 	sleeping = false
-	# Impulse + torque to make it tumble
-	apply_impulse(Vector3.ZERO, Vector3(randf()*10 - 5, randf()*10 + 10, randf()*10 - 5))
-	apply_torque_impulse(Vector3(randf()*5, randf()*5, randf()*5))
+
+	# Apply random impulse and torque to tumble the die
+	apply_impulse(Vector3.ZERO, Vector3(randf() * 10 - 5, randf() * 10 + 10, randf() * 10 - 5))
+	apply_torque_impulse(Vector3(randf() * 5, randf() * 5, randf() * 5))
+
 
 func _on_sleeping_state_changed() -> void:
 	if sleeping and not has_settled:
 		has_settled = true
 		_settle()
+
 
 func _settle() -> void:
 	var best_face = 1
