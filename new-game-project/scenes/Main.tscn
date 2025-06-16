@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://ewqecmpsmp1s"]
+[gd_scene load_steps=13 format=3 uid="uid://ewqecmpsmp1s"]
 
 [ext_resource type="Script" path="res://main.gd" id="1_x1bre"]
 [ext_resource type="PackedScene" uid="uid://515labal0jfn" path="res://scenes/die_o.tscn" id="2_qjyl2"]
@@ -11,6 +11,35 @@
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_mrfeo"]
 albedo_color = Color(0.470588, 1, 0.870588, 1)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_7a54g"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_366if"]
+bg_color = Color(0.424148, 0.678388, 0.341437, 0.501961)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0owln"]
+bg_color = Color(0.423529, 0.678431, 0.341176, 0.501961)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_762nl"]
+bg_color = Color(0.423529, 0.678431, 0.341176, 1)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4xdex"]
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
 
 [node name="GameRoot" type="Node3D"]
 script = ExtResource("1_x1bre")
@@ -63,13 +92,89 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0.58, 2.96746)
 [node name="DiceSlot6" type="Node3D" parent="DiceSlots"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0.58, 2.96746)
 
-[node name="CanvasLayer" type="CanvasLayer" parent="."]
+[node name="FreeReroll" type="CanvasLayer" parent="."]
 
-[node name="Button" type="Button" parent="CanvasLayer"]
+[node name="Button" type="Button" parent="FreeReroll"]
 offset_left = 10.0
 offset_top = 587.0
 offset_right = 95.0
 offset_bottom = 637.0
 text = "REROLL"
 
-[connection signal="pressed" from="CanvasLayer/Button" to="." method="_on_button_pressed"]
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer"]
+offset_top = 100.0
+offset_right = 1152.0
+offset_bottom = 200.0
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 8
+
+[node name="GridContainer" type="GridContainer" parent="CanvasLayer/MarginContainer"]
+layout_mode = 2
+theme_override_constants/h_separation = 15
+columns = 6
+
+[node name="HoldButton1" type="Button" parent="CanvasLayer/MarginContainer/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_styles/focus = SubResource("StyleBoxEmpty_7a54g")
+theme_override_styles/hover_pressed = SubResource("StyleBoxFlat_366if")
+theme_override_styles/hover = SubResource("StyleBoxFlat_0owln")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_762nl")
+theme_override_styles/normal = SubResource("StyleBoxFlat_4xdex")
+
+[node name="HoldButton2" type="Button" parent="CanvasLayer/MarginContainer/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_styles/focus = SubResource("StyleBoxEmpty_7a54g")
+theme_override_styles/hover_pressed = SubResource("StyleBoxFlat_366if")
+theme_override_styles/hover = SubResource("StyleBoxFlat_0owln")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_762nl")
+theme_override_styles/normal = SubResource("StyleBoxFlat_4xdex")
+
+[node name="HoldButton3" type="Button" parent="CanvasLayer/MarginContainer/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_styles/focus = SubResource("StyleBoxEmpty_7a54g")
+theme_override_styles/hover_pressed = SubResource("StyleBoxFlat_366if")
+theme_override_styles/hover = SubResource("StyleBoxFlat_0owln")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_762nl")
+theme_override_styles/normal = SubResource("StyleBoxFlat_4xdex")
+
+[node name="HoldButton4" type="Button" parent="CanvasLayer/MarginContainer/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_styles/focus = SubResource("StyleBoxEmpty_7a54g")
+theme_override_styles/hover_pressed = SubResource("StyleBoxFlat_366if")
+theme_override_styles/hover = SubResource("StyleBoxFlat_0owln")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_762nl")
+theme_override_styles/normal = SubResource("StyleBoxFlat_4xdex")
+
+[node name="HoldButton5" type="Button" parent="CanvasLayer/MarginContainer/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_styles/focus = SubResource("StyleBoxEmpty_7a54g")
+theme_override_styles/hover_pressed = SubResource("StyleBoxFlat_366if")
+theme_override_styles/hover = SubResource("StyleBoxFlat_0owln")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_762nl")
+theme_override_styles/normal = SubResource("StyleBoxFlat_4xdex")
+
+[node name="HoldButton6" type="Button" parent="CanvasLayer/MarginContainer/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_styles/focus = SubResource("StyleBoxEmpty_7a54g")
+theme_override_styles/hover_pressed = SubResource("StyleBoxFlat_366if")
+theme_override_styles/hover = SubResource("StyleBoxFlat_0owln")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_762nl")
+theme_override_styles/normal = SubResource("StyleBoxFlat_4xdex")
+
+[connection signal="pressed" from="FreeReroll/Button" to="." method="_on_button_pressed"]

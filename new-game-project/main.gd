@@ -26,6 +26,8 @@ var _layout_tween = null
 var settled_count := 0
 var _should_print := false
 
+var held: Array = []
+var hold_buttons: Array = []
 const TOTAL_DICE: int = 6
 
 @onready var dice_slots = [
@@ -38,10 +40,36 @@ const TOTAL_DICE: int = 6
 ]
 
 
+
 func _ready() -> void:
+	held.resize(TOTAL_DICE)
+	for i in range(TOTAL_DICE):
+		held[i] = false
+
+		var btn = $CanvasLayer/MarginContainer/GridContainer.get_node("HoldButton%d" % (i+1)) as Button
+		btn.toggle_mode = true
+		btn.set_pressed(false)
+
+		# Create a Callable that calls our handler with the index baked in
+		var cb = Callable(self, "_on_hold_toggled").bind(i)
+		# Connect the toggled signal to that callable
+		btn.toggled.connect(cb)
+
+		hold_buttons.append(btn)
+
 	spawn_and_roll_dice()
 
 
+func _on_hold_toggled(pressed: bool, idx: int) -> void:
+	held[idx] = pressed
+	hold_buttons[idx].modulate = Color(1,1,1,0.5) if pressed else Color(1,1,1,1)
+
+
+
+
+
+
+	
 func spawn_and_roll_dice() -> void:
 	# Clear existing dice
 	for old_die in dice:
