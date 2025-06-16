@@ -12,9 +12,9 @@ extends Node3D
 @export var creature_scenes: Array[PackedScene] = []
 
 # === Dice Roll Counts ===
-@export var offense_count: int = 2
-@export var defense_count: int = 2
-@export var special_count: int = 2
+@export var offense_count: int = 0
+@export var defense_count: int = 0
+@export var special_count: int = 6
 
 # === Die Face Visuals ===
 @export var face_textures: Array[Texture2D] = []
@@ -133,7 +133,7 @@ func _tween_die_into_ground(die: RigidBody3D, is_held: bool) -> void:
 		return
 
 	var base_y: float = float(base_y_variant)
-	var target_y: float = base_y - 0.99 if is_held else base_y
+	var target_y: float = base_y - 0.97 if is_held else base_y
 
 	var current_pos: Vector3 = die.global_transform.origin
 	if absf(current_pos.y - target_y) < 0.001:
