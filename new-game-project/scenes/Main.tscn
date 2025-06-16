@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://ewqecmpsmp1s"]
+[gd_scene load_steps=14 format=3 uid="uid://ewqecmpsmp1s"]
 
 [ext_resource type="Script" path="res://main.gd" id="1_x1bre"]
 [ext_resource type="PackedScene" uid="uid://515labal0jfn" path="res://scenes/die_o.tscn" id="2_qjyl2"]
@@ -11,6 +11,13 @@
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_mrfeo"]
 albedo_color = Color(0.470588, 1, 0.870588, 1)
+
+[sub_resource type="FontFile" id="FontFile_tuuxa"]
+cache/0/16/0/ascent = 0.0
+cache/0/16/0/descent = 0.0
+cache/0/16/0/underline_position = 0.0
+cache/0/16/0/underline_thickness = 0.0
+cache/0/16/0/scale = 1.0
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_7a54g"]
 
@@ -95,6 +102,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0.58, 2.96746)
 [node name="FreeReroll" type="CanvasLayer" parent="."]
 
 [node name="Button" type="Button" parent="FreeReroll"]
+z_index = 3
 offset_left = 10.0
 offset_top = 587.0
 offset_right = 95.0
@@ -102,6 +110,14 @@ offset_bottom = 637.0
 text = "REROLL"
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="ColorRect" type="ColorRect" parent="CanvasLayer"]
+light_mask = 0
+z_index = -9
+offset_right = 1152.0
+offset_bottom = 649.0
+mouse_filter = 2
+color = Color(0, 0, 0, 0.117647)
 
 [node name="MarginContainer" type="MarginContainer" parent="CanvasLayer"]
 offset_top = 100.0
@@ -121,6 +137,11 @@ columns = 6
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+theme_override_fonts/font = SubResource("FontFile_tuuxa")
+theme_override_font_sizes/font_size = 24
 theme_override_styles/focus = SubResource("StyleBoxEmpty_7a54g")
 theme_override_styles/hover_pressed = SubResource("StyleBoxFlat_366if")
 theme_override_styles/hover = SubResource("StyleBoxFlat_0owln")
@@ -131,6 +152,11 @@ theme_override_styles/normal = SubResource("StyleBoxFlat_4xdex")
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+theme_override_fonts/font = SubResource("FontFile_tuuxa")
+theme_override_font_sizes/font_size = 24
 theme_override_styles/focus = SubResource("StyleBoxEmpty_7a54g")
 theme_override_styles/hover_pressed = SubResource("StyleBoxFlat_366if")
 theme_override_styles/hover = SubResource("StyleBoxFlat_0owln")
@@ -141,6 +167,11 @@ theme_override_styles/normal = SubResource("StyleBoxFlat_4xdex")
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+theme_override_fonts/font = SubResource("FontFile_tuuxa")
+theme_override_font_sizes/font_size = 24
 theme_override_styles/focus = SubResource("StyleBoxEmpty_7a54g")
 theme_override_styles/hover_pressed = SubResource("StyleBoxFlat_366if")
 theme_override_styles/hover = SubResource("StyleBoxFlat_0owln")
@@ -151,6 +182,11 @@ theme_override_styles/normal = SubResource("StyleBoxFlat_4xdex")
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+theme_override_fonts/font = SubResource("FontFile_tuuxa")
+theme_override_font_sizes/font_size = 24
 theme_override_styles/focus = SubResource("StyleBoxEmpty_7a54g")
 theme_override_styles/hover_pressed = SubResource("StyleBoxFlat_366if")
 theme_override_styles/hover = SubResource("StyleBoxFlat_0owln")
@@ -161,6 +197,11 @@ theme_override_styles/normal = SubResource("StyleBoxFlat_4xdex")
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+theme_override_fonts/font = SubResource("FontFile_tuuxa")
+theme_override_font_sizes/font_size = 24
 theme_override_styles/focus = SubResource("StyleBoxEmpty_7a54g")
 theme_override_styles/hover_pressed = SubResource("StyleBoxFlat_366if")
 theme_override_styles/hover = SubResource("StyleBoxFlat_0owln")
@@ -171,6 +212,11 @@ theme_override_styles/normal = SubResource("StyleBoxFlat_4xdex")
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+theme_override_fonts/font = SubResource("FontFile_tuuxa")
+theme_override_font_sizes/font_size = 24
 theme_override_styles/focus = SubResource("StyleBoxEmpty_7a54g")
 theme_override_styles/hover_pressed = SubResource("StyleBoxFlat_366if")
 theme_override_styles/hover = SubResource("StyleBoxFlat_0owln")

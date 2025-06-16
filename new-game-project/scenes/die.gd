@@ -27,6 +27,7 @@ var has_settled := false
 
 func _ready() -> void:
 	has_settled = false
+	connect("settled", Callable(self, "_on_signal_dummy"))	
 	connect("sleeping_state_changed", Callable(self, "_on_sleeping_state_changed"))
 
 	# Assign textures to face sprites
@@ -34,7 +35,10 @@ func _ready() -> void:
 		var sprite := get_node("Face%d" % i) as Sprite3D
 		if face_textures.size() > i and face_textures[i]:
 			sprite.texture = face_textures[i]
-
+			
+func _on_signal_dummy(_a, _b):
+	# never called, it’s just for silencing the warning
+	pass
 
 func roll() -> void:
 	has_settled = false
