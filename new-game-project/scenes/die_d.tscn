@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://cchydbji2gcrj"]
+[gd_scene load_steps=8 format=3 uid="uid://cchydbji2gcrj"]
 
 [ext_resource type="PackedScene" uid="uid://btpb5bclgui6t" path="res://scenes/die.tscn" id="1_i1v1o"]
 [ext_resource type="Material" uid="uid://cr2h1ywj40r3e" path="res://Mats/Dice_Defensive.tres" id="2_htwm1"]
@@ -6,6 +6,8 @@
 [ext_resource type="Texture2D" uid="uid://dicuoicbgg76q" path="res://images/bearFace.png" id="3_wsxta"]
 [ext_resource type="PackedScene" uid="uid://dynnffgwtqb7x" path="res://scenes/creature_turtle.tscn" id="4_nhuj8"]
 [ext_resource type="PackedScene" uid="uid://kdf5b8iv2l55" path="res://scenes/creature_bear.tscn" id="5_buwsb"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_b6nqq"]
 
 [node name="Defensive" instance=ExtResource("1_i1v1o")]
 face_textures = Array[Texture2D]([null, ExtResource("2_tcn7j"), ExtResource("2_tcn7j"), ExtResource("2_tcn7j"), ExtResource("3_wsxta"), ExtResource("3_wsxta"), ExtResource("3_wsxta")])
@@ -36,3 +38,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.0461073, -0.76456)
 
 [node name="Target6" parent="." index="13"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.723884, -0.0275651)
+
+[node name="OuterShape" type="CollisionShape3D" parent="." index="14"]
+transform = Transform3D(1.1, 0, 0, 0, 1.1, 0, 0, 0, 1.1, 0, 0, 0)
+shape = SubResource("BoxShape3D_b6nqq")

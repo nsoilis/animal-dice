@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://515labal0jfn"]
+[gd_scene load_steps=8 format=3 uid="uid://515labal0jfn"]
 
 [ext_resource type="PackedScene" uid="uid://btpb5bclgui6t" path="res://scenes/die.tscn" id="1_5oa3c"]
 [ext_resource type="Texture2D" uid="uid://rjdwpbrdjhm3" path="res://images/frogFace.png" id="2_8yiuj"]
@@ -6,6 +6,8 @@
 [ext_resource type="Texture2D" uid="uid://bk0t6ppahdj4" path="res://images/catFace.png" id="3_5bajh"]
 [ext_resource type="PackedScene" uid="uid://02y76fm3orb3" path="res://scenes/creature_frog.tscn" id="4_cc07r"]
 [ext_resource type="PackedScene" uid="uid://cnxnk6h6ctudv" path="res://scenes/creature_cat.tscn" id="5_nurbj"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_74qr6"]
 
 [node name="Offensive" instance=ExtResource("1_5oa3c")]
 face_textures = Array[Texture2D]([null, ExtResource("2_8yiuj"), ExtResource("2_8yiuj"), ExtResource("2_8yiuj"), ExtResource("3_5bajh"), ExtResource("3_5bajh"), ExtResource("3_5bajh")])
@@ -36,3 +38,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.00620741, -0.815328)
 
 [node name="Target6" parent="." index="13"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.71241, -0.0959862)
+
+[node name="OuterShape" type="CollisionShape3D" parent="." index="14"]
+transform = Transform3D(1.1, 0, 0, 0, 1.1, 0, 0, 0, 1.1, 0, 0, 0)
+shape = SubResource("BoxShape3D_74qr6")

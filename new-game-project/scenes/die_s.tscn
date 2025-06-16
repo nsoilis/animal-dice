@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://qmf78hu86m58"]
+[gd_scene load_steps=8 format=3 uid="uid://qmf78hu86m58"]
 
 [ext_resource type="PackedScene" uid="uid://btpb5bclgui6t" path="res://scenes/die.tscn" id="1_ggo66"]
 [ext_resource type="Material" uid="uid://bwtrmwi6lbtgc" path="res://Mats/Dice_Special.tres" id="2_7x6tb"]
@@ -6,6 +6,8 @@
 [ext_resource type="Texture2D" uid="uid://ctluvaj1e582" path="res://images/rabbitFace.png" id="3_74drg"]
 [ext_resource type="PackedScene" uid="uid://cc5cymsfake1d" path="res://scenes/creature_owl.tscn" id="4_nltps"]
 [ext_resource type="PackedScene" uid="uid://by0ceh3tg3lt7" path="res://scenes/creature_rabbit.tscn" id="5_66jgs"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_gdktk"]
 
 [node name="Special" instance=ExtResource("1_ggo66")]
 face_textures = Array[Texture2D]([null, ExtResource("2_ys8e3"), ExtResource("2_ys8e3"), ExtResource("2_ys8e3"), ExtResource("3_74drg"), ExtResource("3_74drg"), ExtResource("3_74drg")])
@@ -36,3 +38,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.008834, -0.808238)
 
 [node name="Target6" parent="." index="13"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.783023, -0.00752318)
+
+[node name="OuterShape" type="CollisionShape3D" parent="." index="14"]
+transform = Transform3D(1.1, 0, 0, 0, 1.1, 0, 0, 0, 1.1, 0, 0, 0)
+shape = SubResource("BoxShape3D_gdktk")
