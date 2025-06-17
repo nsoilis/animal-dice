@@ -12,9 +12,9 @@ extends Node3D
 @export var creature_scenes: Array[PackedScene] = []
 
 # === Dice Roll Counts ===
-@export var offense_count: int = 2
-@export var defense_count: int = 2
-@export var special_count: int = 2
+@export var offense_count: int = 6
+@export var defense_count: int = 0
+@export var special_count: int = 0
 
 # === Die Face Visuals ===
 @export var face_textures: Array[Texture2D] = []
@@ -32,6 +32,7 @@ var hold_buttons: Array = []
 const TOTAL_DICE: int = 6
 const STUCK_DIST := 1.1   
 
+@onready var result_label = $CanvasLayer/ResultLabel
 @onready var reroll_btn = $FreeReroll/Button
 @onready var safety_timer := Timer.new()
 @onready var dice_slots = [
@@ -43,8 +44,6 @@ const STUCK_DIST := 1.1
 	$DiceSlots/DiceSlot6,
 ]
 
-
-
 func _ready() -> void:
 	add_child(safety_timer)
 	reroll_btn.text = "Roll"
@@ -52,6 +51,7 @@ func _ready() -> void:
 	safety_timer.wait_time = 6.0
 	safety_timer.connect("timeout", Callable(self, "_on_safety_timeout"))
 	$CanvasLayer.visible = false
+	result_label.text = ""
 	held.resize(TOTAL_DICE)
 	for i in range(TOTAL_DICE):
 		held[i] = false
@@ -141,7 +141,7 @@ func _tween_die_into_ground(die: RigidBody3D, is_held: bool) -> void:
 		return
 
 	var base_y: float = float(base_y_variant)
-	var target_y: float = base_y - 0.963 if is_held else base_y
+	var target_y: float = base_y - 0.935 if is_held else base_y
 
 	var current_pos: Vector3 = die.global_transform.origin
 	if absf(current_pos.y - target_y) < 0.001:
@@ -220,6 +220,7 @@ func _on_die_settled(face_idx: int, die: RigidBody3D) -> void:
 			die.angular_velocity  = Vector3.ZERO
 			die.roll()
 			return
+	
 
 	# 2) truly settled, so log it
 	var scene  = die.creature_scenes[face_idx]
@@ -247,6 +248,9 @@ func _on_die_settled(face_idx: int, die: RigidBody3D) -> void:
 		print("\n***************************************\n")
 
 		_layout_dice()
+		
+		result_label.text = _evaluate_dice_hand(true)
+		result_label.show()
 
 		await get_tree().create_timer(0.75).timeout
 		$CanvasLayer.visible = true
@@ -255,6 +259,54 @@ func _on_die_settled(face_idx: int, die: RigidBody3D) -> void:
 		_should_print = false
 		spawn_logs.clear()
 		settled_count = 0
+
+# — call this with `true` to include held dice in the count,
+#   or `false` to only look at the freshly rolled ones
+func _evaluate_dice_hand(include_held: bool = true) -> String:
+	var freq := {}
+	for i in range(dice.size()):
+		if not include_held and held[i]:
+			continue
+		var die: RigidBody3D = dice[i]
+		var fi: int = int(die.get_meta("face_idx", -1))
+		if fi < 1:
+			continue
+		var scene: PackedScene = die.creature_scenes[fi]
+		var animal: String = scene.resource_path.get_file().get_basename()\
+			.replace("creature_", "")\
+			.capitalize()
+		freq[animal] = freq.get(animal, 0) + 1
+
+	# let counts be an untyped Array
+	var counts := freq.values()
+	counts.sort()
+	counts.reverse()
+
+
+	# 3) match the “poker” hands by animal count
+	match counts:
+		[6]:
+			return "BOATZEE!"
+		[5, 1]:
+			return "5 OF A KIND!"
+		[4, 1, 1], [4, 2]:
+			return "4 OF A KIND!"
+		[3, 3]:
+			return "DOUBLE TRIPLE!"
+		[3, 1, 1, 1]:
+			return "3 OF A KIND!"
+		[3, 2, 1]:
+			return "FULL HOUSE!"
+		[2, 2, 2]:
+			return "FULL ARK!"
+		[2, 2, 1, 1]:
+			return "DOUBLE PAIR!"
+		[2, 1, 1, 1, 1]:
+			return "PAIR!"
+		_:
+			return ""
+
+
 
 
 		
