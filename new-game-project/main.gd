@@ -31,6 +31,7 @@ var held: Array = []
 var hold_buttons: Array = []
 const TOTAL_DICE: int = 6
 const STUCK_DIST := 1.1   
+const HOP_STRENGTH := 5.0
 
 @onready var result_label = $CanvasLayer/ResultLabel
 @onready var reroll_btn = $FreeReroll/Button
@@ -72,26 +73,37 @@ func _ready() -> void:
 
 func _on_hold_toggled(pressed: bool, idx: int) -> void:
 	held[idx] = pressed
-	hold_buttons[idx].modulate = Color(1, 1, 1, 1)
-
 	var die: RigidBody3D = dice[idx]
 
-	# Freeze the die while held so it can't be moved or nudged
-	die.freeze = pressed
-	die.sleeping = pressed
+	# ── change collision layers & masks ────────────────────
+	if pressed:
+		# move into Held layer (3), collide with nothing
+		die.collision_layer = 1 << 2
+		die.collision_mask  = 0
+	else:
+		# back to Rollers layer (2), collide with ground (1) & other rollers (2)
+		die.collision_layer = 1 << 1
+		die.collision_mask  = (1 << 0) | (1 << 1)
 
-	# Visually lower or raise the die
+	# ── freeze / sleep and tween into ground ───────────────
+	die.freeze   = pressed
+	die.sleeping = pressed
 	_tween_die_into_ground(die, pressed)
 
-	# === Update the button label to reflect new state ===
-	var label = "Locked" if held[idx] else "Reroll"
-	var face_idx = die.get_meta("face_idx") if die.has_meta("face_idx") else -1
-	if face_idx != -1 and die.face_textures.size() > face_idx:
-		var animal = die.creature_scenes[face_idx].resource_path.get_file().get_basename().replace("creature_", "").capitalize()
+	# ── update its hold‐button icon & label ───────────────
+	var label: String
+	if pressed:
+		label = "LOCKED"
+	else:
+		label = "REROLL"
+	var face_idx: int  = int(die.get_meta("face_idx", -1))
+	if face_idx >= 1 and face_idx < die.face_textures.size():
+		var scene: PackedScene = die.creature_scenes[face_idx]
+		var animal: String    = scene.resource_path.get_file().get_basename()\
+				.replace("creature_", "")\
+				.capitalize()
 		hold_buttons[idx].icon = die.face_textures[face_idx]
-		hold_buttons[idx].text = "%s\n%s" % [label.to_upper(), animal]
-
-
+		hold_buttons[idx].text = "%s\n%s" % [label, animal]
 
 
 func _set_die_collision_enabled(die: Node, enabled: bool) -> void:
@@ -141,7 +153,7 @@ func _tween_die_into_ground(die: RigidBody3D, is_held: bool) -> void:
 		return
 
 	var base_y: float = float(base_y_variant)
-	var target_y: float = base_y - 0.935 if is_held else base_y
+	var target_y: float = base_y - 0.8 if is_held else base_y
 
 	var current_pos: Vector3 = die.global_transform.origin
 	if absf(current_pos.y - target_y) < 0.001:
@@ -161,9 +173,6 @@ func _tween_die_into_ground(die: RigidBody3D, is_held: bool) -> void:
 	tween.tween_property(die, "global_transform:origin", target_position, 0.25)\
 		.set_trans(Tween.TRANS_SINE)\
 		.set_ease(Tween.EASE_OUT)
-
-
-
 
 	
 func spawn_and_roll_dice() -> void:
@@ -189,38 +198,28 @@ func _spawn_group(prefab: PackedScene, count: int, role_name: String) -> void:
 		var die := prefab.instantiate() as RigidBody3D
 		die.name = "%s Die %d" % [role_name, i + 1]
 
-		# Random face-up
+		# ─── collision ───────────────────────────────
+
+		# ─── random face‐up & position ─────────────
 		var face_idx := randi() % 6 + 1
 		die.rotation_degrees = rotation_for_face(face_idx)
-
-		# Circular spawn positioning
 		var idx := dice.size()
 		var angle := idx * TAU / TOTAL_DICE
-		die.position = Vector3(sin(angle) * 2, 2, cos(angle) * 2)
+		die.position = Vector3(sin(angle)*2, 2, cos(angle)*2)
 
-		# Attach and roll
+		# ─── add it in ──────────────────────────────
 		$DiceContainer.add_child(die)
 		dice.append(die)
 		die.connect("settled", Callable(self, "_on_die_settled"))
 		die.roll()
 
 
+
+
 func _on_die_settled(face_idx: int, die: RigidBody3D) -> void:
 	# remember which face landed
 	die.set_meta("face_idx", face_idx)
 
-	# 1) if this die is resting on another, immediately reroll it
-	const STUCK_DIST := 1.1
-	for other in dice:
-		if other == die:
-			continue
-		if die.global_transform.origin.distance_to(other.global_transform.origin) < STUCK_DIST:
-			die.sleeping          = false
-			die.linear_velocity   = Vector3.ZERO
-			die.angular_velocity  = Vector3.ZERO
-			die.roll()
-			return
-	
 
 	# 2) truly settled, so log it
 	var scene  = die.creature_scenes[face_idx]
@@ -358,15 +357,13 @@ func _layout_dice() -> void:
 
 
 func _on_button_pressed() -> void:
-	const HOP_STRENGTH := 5.0
-	reroll_btn.text = "Reroll"
-	$CanvasLayer.visible = false
-	$FreeReroll.visible = false   # ── hide it now
-	# prepare…
+	reroll_btn.text       = "Reroll"
+	$CanvasLayer.visible  = false
+	$FreeReroll.visible   = false
+
 	_should_print = true
 	settled_count = 0
 	spawn_logs.clear()
-
 	expected_settles = 0
 	for i in range(dice.size()):
 		if not held[i]:
@@ -375,25 +372,29 @@ func _on_button_pressed() -> void:
 	if expected_settles == 0:
 		_layout_dice()
 		$CanvasLayer.visible = true
-		$FreeReroll.visible = true
+		$FreeReroll.visible  = true
 		return
 
-	# roll only the un-held dice
+	# ── re-enable ground collisions on all un-held dice
 	for i in range(dice.size()):
 		if held[i]:
 			continue
-		var die = dice[i]
-		die.linear_velocity  = Vector3.ZERO
-		die.angular_velocity = Vector3.ZERO
+		var d := dice[i]
+		d.collision_mask = 1 << 0   # ground only
 
-		var t = die.global_transform
+	# ── hop & roll just the un-held dice
+	for i in range(dice.size()):
+		if held[i]:
+			continue
+		var d := dice[i]
+		d.linear_velocity  = Vector3.ZERO
+		d.angular_velocity = Vector3.ZERO
+		var t = d.global_transform
 		t.origin.y += 0.2
-		die.global_transform = t
+		d.global_transform = t
+		d.apply_central_impulse(Vector3.UP * HOP_STRENGTH)
+		d.roll()
 
-		die.apply_central_impulse(Vector3.UP * HOP_STRENGTH)
-		die.roll()
-
-	# start the safety timer after rolling
 	if safety_timer.is_stopped():
 		safety_timer.start()
 	else:

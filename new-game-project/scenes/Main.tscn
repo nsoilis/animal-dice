@@ -68,6 +68,7 @@ transform = Transform3D(1, 0, 0, 0, 0.644351, 0.76473, 0, -0.76473, 0.644351, 0,
 [node name="CreatureContainer" type="Node3D" parent="."]
 
 [node name="Floor" type="StaticBody3D" parent="."]
+collision_mask = 2
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Floor"]
 transform = Transform3D(40, 0, 0, 0, 0.1, 0, 0, 0, 40, 0, 0, 0)
@@ -82,22 +83,22 @@ surface_material_override/0 = SubResource("StandardMaterial3D_mrfeo")
 [node name="DiceSlots" type="Node3D" parent="."]
 
 [node name="DiceSlot1" type="Node3D" parent="DiceSlots"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 0.58, 1)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 0.54, 1)
 
 [node name="DiceSlot2" type="Node3D" parent="DiceSlots"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 0.58, 1)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 0.54, 1)
 
 [node name="DiceSlot3" type="Node3D" parent="DiceSlots"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0.58, 1)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0.54, 1)
 
 [node name="DiceSlot4" type="Node3D" parent="DiceSlots"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0.58, 1)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0.54, 1)
 
 [node name="DiceSlot5" type="Node3D" parent="DiceSlots"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 0.58, 1)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 0.54, 1)
 
 [node name="DiceSlot6" type="Node3D" parent="DiceSlots"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 0.58, 1)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 0.54, 1)
 
 [node name="FreeReroll" type="CanvasLayer" parent="."]
 
