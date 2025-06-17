@@ -12,9 +12,9 @@ extends Node3D
 @export var creature_scenes: Array[PackedScene] = []
 
 # === Dice Roll Counts ===
-@export var offense_count: int = 0
-@export var defense_count: int = 0
-@export var special_count: int = 6
+@export var offense_count: int = 2
+@export var defense_count: int = 2
+@export var special_count: int = 2
 
 # === Die Face Visuals ===
 @export var face_textures: Array[Texture2D] = []
@@ -30,7 +30,9 @@ var expected_settles := 0
 var held: Array = []
 var hold_buttons: Array = []
 const TOTAL_DICE: int = 6
+const STUCK_DIST := 1.1   
 
+@onready var safety_timer := Timer.new()
 @onready var dice_slots = [
 	$DiceSlots/DiceSlot1,
 	$DiceSlots/DiceSlot2,
@@ -43,6 +45,10 @@ const TOTAL_DICE: int = 6
 
 
 func _ready() -> void:
+	add_child(safety_timer)
+	safety_timer.one_shot = true
+	safety_timer.wait_time = 6.0
+	safety_timer.connect("timeout", Callable(self, "_on_safety_timeout"))
 	$CanvasLayer.visible = false
 	held.resize(TOTAL_DICE)
 	for i in range(TOTAL_DICE):
@@ -133,7 +139,7 @@ func _tween_die_into_ground(die: RigidBody3D, is_held: bool) -> void:
 		return
 
 	var base_y: float = float(base_y_variant)
-	var target_y: float = base_y - 0.97 if is_held else base_y
+	var target_y: float = base_y - 0.963 if is_held else base_y
 
 	var current_pos: Vector3 = die.global_transform.origin
 	if absf(current_pos.y - target_y) < 0.001:
@@ -198,47 +204,56 @@ func _spawn_group(prefab: PackedScene, count: int, role_name: String) -> void:
 
 
 func _on_die_settled(face_idx: int, die: RigidBody3D) -> void:
-	# 1) remember which face landed and its exact rotation
+	# remember which face landed
 	die.set_meta("face_idx", face_idx)
-	die.set_meta("settled_rot", die.rotation_degrees)
 
-	# 2) log the spawn message
+	# 1) if this die is resting on another, immediately reroll it
+	const STUCK_DIST := 1.1
+	for other in dice:
+		if other == die:
+			continue
+		if die.global_transform.origin.distance_to(other.global_transform.origin) < STUCK_DIST:
+			die.sleeping          = false
+			die.linear_velocity   = Vector3.ZERO
+			die.angular_velocity  = Vector3.ZERO
+			die.roll()
+			return
+
+	# 2) truly settled, so log it
 	var scene  = die.creature_scenes[face_idx]
-	var animal = scene.resource_path.get_file().get_basename().replace("creature_", "").capitalize()
+	var animal = scene.resource_path.get_file().get_basename().replace("creature_","").capitalize()
 	spawn_logs.append("%s spawned: %s (face %d)" % [die.name, animal, face_idx])
 	settled_count += 1
 
-	# 3) update the corresponding HoldButton’s icon & text
+	# 3) update its hold‐button right away
 	var idx = dice.find(die)
-	if idx != -1:
-		# pull the texture from the die itself (exports in die.gd)
+	if idx >= 0:
 		var animal_tex = die.face_textures[face_idx]
-		var label = "Locked" if held[idx] else "Reroll"
+		var label = "REROLL"
+		if held[idx]:
+			label = "LOCKED"
 		hold_buttons[idx].icon = animal_tex
-		hold_buttons[idx].text = "%s\n%s" % [label.to_upper(), animal]
+		hold_buttons[idx].text = "%s\n%s" % [label, animal]
 
-
-	# 4) once all dice have settled, do the layout and print
+	# 4) once all dice are really settled, layout & show UI
 	if _should_print and settled_count >= expected_settles:
-		# 1) print results
+		if not safety_timer.is_stopped():
+			safety_timer.stop()
 		spawn_logs.sort()
 		for line in spawn_logs:
 			print(line)
 		print("\n***************************************\n")
 
-		# 2) wait a bit (e.g. 0.75s) before showing the hold UI
-		
-
-		# 3) line up the dice
 		_layout_dice()
-		
-		await get_tree().create_timer(1).timeout
+
+		await get_tree().create_timer(0.75).timeout
 		$CanvasLayer.visible = true
 
-		# 4) reset for next round
 		_should_print = false
 		spawn_logs.clear()
 		settled_count = 0
+
+
 
 
 
@@ -294,9 +309,10 @@ func _layout_dice() -> void:
 func _on_button_pressed() -> void:
 	const HOP_STRENGTH := 5.0
 	$CanvasLayer.visible = false
+
 	# prepare…
-	_should_print    = true
-	settled_count    = 0
+	_should_print = true
+	settled_count = 0
 	spawn_logs.clear()
 
 	expected_settles = 0
@@ -304,20 +320,14 @@ func _on_button_pressed() -> void:
 		if not held[i]:
 			expected_settles += 1
 
-	# debug: print which dice we think are held
-
-		
-
 	if expected_settles == 0:
 		_layout_dice()
 		return
 
+	# roll only the un-held dice
 	for i in range(dice.size()):
 		if held[i]:
-		
 			continue
-		
-	
 		var die = dice[i]
 		die.linear_velocity  = Vector3.ZERO
 		die.angular_velocity = Vector3.ZERO
@@ -328,6 +338,24 @@ func _on_button_pressed() -> void:
 
 		die.apply_central_impulse(Vector3.UP * HOP_STRENGTH)
 		die.roll()
+
+	# start the safety timer after rolling
+	if safety_timer.is_stopped():
+		safety_timer.start()
+	else:
+		safety_timer.stop()
+		safety_timer.start()
+
+
+func _on_safety_timeout() -> void:
+	if _should_print:
+		# if we’re still waiting for dice, force a layout now
+		_layout_dice()
+		$CanvasLayer.visible = true
+		_should_print = false
+		spawn_logs.clear()
+		settled_count = 0
+
 
 
 
