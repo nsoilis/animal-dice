@@ -103,26 +103,37 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0.58, 2.96746)
 
 [node name="Button" type="Button" parent="FreeReroll"]
 z_index = 3
-offset_left = 10.0
-offset_top = 587.0
-offset_right = 95.0
-offset_bottom = 637.0
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 30.0
+offset_top = -73.0
+offset_right = 130.0
+offset_bottom = -23.0
+grow_vertical = 0
+theme_override_font_sizes/font_size = 25
 text = "REROLL"
+metadata/_edit_use_anchors_ = true
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
 [node name="ColorRect" type="ColorRect" parent="CanvasLayer"]
 light_mask = 0
 z_index = -9
-offset_right = 1152.0
-offset_bottom = 649.0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 mouse_filter = 2
 color = Color(0, 0, 0, 0.117647)
 
 [node name="MarginContainer" type="MarginContainer" parent="CanvasLayer"]
-offset_top = 100.0
-offset_right = 1152.0
-offset_bottom = 200.0
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 112.0
+offset_bottom = 223.0
+grow_horizontal = 2
 theme_override_constants/margin_left = 16
 theme_override_constants/margin_top = 16
 theme_override_constants/margin_right = 16

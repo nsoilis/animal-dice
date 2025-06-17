@@ -32,6 +32,7 @@ var hold_buttons: Array = []
 const TOTAL_DICE: int = 6
 const STUCK_DIST := 1.1   
 
+@onready var reroll_btn = $FreeReroll/Button
 @onready var safety_timer := Timer.new()
 @onready var dice_slots = [
 	$DiceSlots/DiceSlot1,
@@ -46,6 +47,7 @@ const STUCK_DIST := 1.1
 
 func _ready() -> void:
 	add_child(safety_timer)
+	reroll_btn.text = "Roll"
 	safety_timer.one_shot = true
 	safety_timer.wait_time = 6.0
 	safety_timer.connect("timeout", Callable(self, "_on_safety_timeout"))
@@ -248,14 +250,11 @@ func _on_die_settled(face_idx: int, die: RigidBody3D) -> void:
 
 		await get_tree().create_timer(0.75).timeout
 		$CanvasLayer.visible = true
+		$FreeReroll.visible = true
 
 		_should_print = false
 		spawn_logs.clear()
 		settled_count = 0
-
-
-
-
 
 
 		
@@ -308,8 +307,9 @@ func _layout_dice() -> void:
 
 func _on_button_pressed() -> void:
 	const HOP_STRENGTH := 5.0
+	reroll_btn.text = "Reroll"
 	$CanvasLayer.visible = false
-
+	$FreeReroll.visible = false   # ── hide it now
 	# prepare…
 	_should_print = true
 	settled_count = 0
@@ -322,6 +322,8 @@ func _on_button_pressed() -> void:
 
 	if expected_settles == 0:
 		_layout_dice()
+		$CanvasLayer.visible = true
+		$FreeReroll.visible = true
 		return
 
 	# roll only the un-held dice
@@ -352,6 +354,7 @@ func _on_safety_timeout() -> void:
 		# if we’re still waiting for dice, force a layout now
 		_layout_dice()
 		$CanvasLayer.visible = true
+		$FreeReroll.visible = true   # ── hide it now
 		_should_print = false
 		spawn_logs.clear()
 		settled_count = 0
@@ -375,5 +378,3 @@ func _align_die_yaw(die: RigidBody3D) -> void:
 	var r = die.rotation_degrees
 	r.y = 0
 	die.rotation_degrees = r
-
-	
